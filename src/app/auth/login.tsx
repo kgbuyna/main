@@ -2,13 +2,7 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
@@ -25,6 +19,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ToastAction } from "@/components/ui/toast";
+import { push } from "@/store/slices/routerSlice";
+import { useDispatch } from "react-redux";
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -32,6 +28,8 @@ const formSchema = z.object({
 });
 const Login = () => {
   const { toast } = useToast();
+  const { setUser, setToken } = useUser();
+  const dispatch = useDispatch();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,7 +37,6 @@ const Login = () => {
       username: "",
     },
   });
-  const { setUser, setToken } = useUser();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -126,9 +123,13 @@ const Login = () => {
               </div>
               <div className="mt-4 text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <Link href="/auth/sign-up" className="underline">
+                <Button
+                  variant={"link"}
+                  className="underline"
+                  onClick={() => dispatch(push("sign-up"))}
+                >
                   Sign up
-                </Link>
+                </Button>
               </div>
             </form>
           </Form>

@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,11 +15,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { postRequest } from "@/utils/handlers";
-import { UserType } from "@/types/base";
 import { useUser } from "@/hooks/userProvider";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { push } from "@/store/slices/routerSlice";
 
 const formSchema = z
   .object({
@@ -40,6 +34,8 @@ const formSchema = z
   });
 
 const SignUp = () => {
+  const dispatch = useDispatch();
+
   const { setUser, setToken } = useUser();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -167,9 +163,13 @@ const SignUp = () => {
 
                 <div className="mt-4 text-center text-sm">
                   Have an account?{" "}
-                  <Link href="/auth/login" className="underline">
+                  <Button
+                    variant={"link"}
+                    className="underline"
+                    onClick={() => dispatch(push("login"))}
+                  >
                     Login
-                  </Link>
+                  </Button>
                 </div>
               </div>
             </form>

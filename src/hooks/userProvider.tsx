@@ -11,13 +11,20 @@ interface UserContextProps {
   user: UserType | null;
   setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
   token: string;
+  index: number;
   setToken: React.Dispatch<React.SetStateAction<string>>;
   //   logout: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
+export const UserProvider = ({
+  index,
+  children,
+}: {
+  index: number;
+  children: ReactNode;
+}) => {
   const [token, setToken] = useState<string>("");
   const [user, setUser] = useState<UserType | null>(null);
 
@@ -29,7 +36,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, token, setToken }}>
+    <UserContext.Provider value={{ index, user, setUser, token, setToken }}>
       {children}
     </UserContext.Provider>
   );
