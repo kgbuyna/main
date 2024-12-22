@@ -1,16 +1,32 @@
 import { configureStore } from "@reduxjs/toolkit";
-import routerReducer from "./slices/routerSlice";
+import userSlice from "./slices/userSlice";
 
-const store1 = configureStore({
-  reducer: {
-    router: routerReducer,
-  },
-});
+interface InitialStoreValue {
+  activeTabKey: string;
+  tokenKey: string;
+  userKey: string;
+}
 
-const store2 = configureStore({
-  reducer: {
-    router: routerReducer,
-  },
-});
+const createStore = ({
+  activeTabKey,
+  tokenKey,
+  userKey,
+}: InitialStoreValue) => {
+  const store = configureStore({
+    reducer: {
+      user: userSlice.reducer,
+    },
+  });
 
-export { store1, store2 };
+  store.dispatch(
+    userSlice.actions.initialize({
+      activeTabKey,
+      tokenKey,
+      userKey,
+    })
+  );
+
+  return store;
+};
+
+export default createStore;

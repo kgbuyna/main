@@ -2,7 +2,6 @@
 
 import localFont from "next/font/local";
 import "./globals.css";
-import { UserProvider } from "@/hooks/userProvider";
 import { Toaster } from "@/components/ui/toaster";
 import {
   ResizableHandle,
@@ -11,7 +10,7 @@ import {
 } from "@/components/ui/resizable";
 import { Provider } from "react-redux";
 
-import { store1, store2 } from "@/store/store";
+import createStore from "@/store/store";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,6 +28,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const store1 = createStore({
+    activeTabKey: "trois",
+    tokenKey: "sept",
+    userKey: "mignonne",
+  });
+
+  const store2 = createStore({
+    activeTabKey: "quatre",
+    tokenKey: "deux",
+    userKey: "mignon",
+  });
+
   return (
     <html lang="en">
       <body
@@ -40,21 +51,13 @@ export default function RootLayout({
         >
           <ResizablePanel defaultSize={50}>
             <div className="flex w-full">
-              <Provider store={store1}>
-                <UserProvider tokenKey="sept" activeTabKey="trois">
-                  {children}
-                </UserProvider>
-              </Provider>
+              <Provider store={store1}>{children}</Provider>
             </div>
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={50}>
             <div className="flex h-full items-center justify-center">
-              <Provider store={store2}>
-                <UserProvider tokenKey="deux" activeTabKey="quatre">
-                  {children}
-                </UserProvider>
-              </Provider>
+              <Provider store={store2}>{children}</Provider>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

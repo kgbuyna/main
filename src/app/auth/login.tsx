@@ -1,6 +1,4 @@
 "use client";
-import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { postRequest } from "@/utils/handlers";
-import { useUser } from "@/hooks/userProvider";
 import {
   Form,
   FormControl,
@@ -19,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ToastAction } from "@/components/ui/toast";
-import { push } from "@/store/slices/routerSlice";
+import { push, setToken, setUser } from "@/store/slices/userSlice";
 import { useDispatch } from "react-redux";
 
 const formSchema = z.object({
@@ -28,7 +25,6 @@ const formSchema = z.object({
 });
 const Login = () => {
   const { toast } = useToast();
-  const { setUser, setToken, activeTabKey, tokenKey } = useUser();
 
   const dispatch = useDispatch();
 
@@ -49,13 +45,15 @@ const Login = () => {
         }
       );
       if (res.data && res.status === "success") {
-        setUser({
-          username: values.username,
-        });
-        dispatch(push({ activeTabKey, dest: "messenger" }));
+        dispatch(
+          setUser({
+            id: res.data.id,
+            username: values.username,
+          })
+        );
+        dispatch(push("inbox"));
 
-        localStorage.setItem(tokenKey, res.data.token);
-        setToken(res.data.token);
+        dispatch(setToken(res.data.token));
 
         toast({
           variant: "default",
@@ -132,9 +130,7 @@ const Login = () => {
                 <Button
                   variant={"link"}
                   className="underline"
-                  onClick={() =>
-                    dispatch(push({ activeTabKey, dest: "sign-up" }))
-                  }
+                  onClick={() => dispatch(push("sign-up"))}
                 >
                   Sign up
                 </Button>

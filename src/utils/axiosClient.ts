@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 
 const axiosClient = (baseUrl?: string, token?: string): AxiosInstance => {
   const client = axios.create({
-    baseURL: baseUrl || "http://localhost:9999/",
+    baseURL: baseUrl || "http://localhost:8000/",
     headers: {
       "Content-Type": "application/json",
       Authorization: token ? `Bearer ${token}` : "",

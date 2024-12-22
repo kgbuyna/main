@@ -1,5 +1,4 @@
 import * as React from "react";
-import { GalleryVerticalEnd } from "lucide-react";
 
 import {
   Sidebar,
@@ -12,24 +11,29 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarProvider,
 } from "@/components/ui/sidebar";
+import { useDispatch, useSelector } from "react-redux";
+import { push } from "@/store/slices/userSlice";
+import { Route } from "@/types/base";
+import Account from "./account";
+// import { push } from "@/store/slices/routerSlice";
 
 // This is sample data.
 const data = {
   navMain: [
     {
-      title: "Conversation",
+      title: "Messenger",
       url: "#",
       items: [
         {
           title: "Inbox",
-          url: "#",
+          routeName: "inbox",
+          isActive: false,
         },
         {
-          title: "Project Structure",
-          url: "#",
-          isActive: true,
+          title: "Friends",
+          routeName: "friends",
+          isActive: false,
         },
       ],
     },
@@ -37,46 +41,40 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const currentRoute = useSelector((state) => state.user.currentRoute);
+
+  const dispatch = useDispatch();
+
   return (
     <Sidebar variant="sidebar" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Documentation</span>
-                  <span className="">v1.0.0</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <Account />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu className="gap-2">
             {data.navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
-                {/* <SidebarMenuButton
-                    asChild
-                    onClick={() => console.log("object")}
-                  >
-                    <a href={item.url} className="font-medium">
-                      {item.title}
-                    </a>
-                  </SidebarMenuButton> */}
+                <SidebarMenuButton
+                  asChild
+                  onClick={() => {
+                    // dispatch(push(item.));
+                  }}
+                >
+                  <a href={item.url} className="font-medium">
+                    {item.title}
+                  </a>
+                </SidebarMenuButton>
                 {item.items?.length ? (
                   <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
                     {item.items.map((item) => (
                       <SidebarMenuSubItem key={item.title}>
                         <SidebarMenuSubButton
                           asChild
-                          onClick={() => console.log("object")}
-                          isActive={item.isActive}
+                          onClick={() =>
+                            dispatch(push(item.routeName as Route))
+                          }
+                          isActive={currentRoute == item.routeName}
                         >
                           <a href={item.url}>{item.title}</a>
                         </SidebarMenuSubButton>

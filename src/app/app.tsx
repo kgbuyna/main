@@ -5,12 +5,15 @@ import React from "react";
 import Login from "./auth/login";
 import SignUp from "./auth/sign-up";
 import { useSelector } from "react-redux";
-import MessengerLayout from "./messenger/layout";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import InboxTab from "./messenger/layout";
 
 const App = () => {
-  const currentRoute = useSelector((state) => state.router.currentRoute);
+  const currentRoute = useSelector((state) => state.user.currentRoute);
+  const state = useSelector((state) => state.user);
+  console.log("state");
+  console.log(JSON.stringify(state));
 
   return (
     <div className="flex flex-row h-screen w-full">
@@ -28,8 +31,8 @@ const App = () => {
         <TabsContent value="sign-up">
           <SignUp />
         </TabsContent>
-        <TabsContent value="messenger" className="h-full w-full">
-          <MessengerLayout />
+        <TabsContent value="inbox" className="h-full w-full">
+          <InboxTab />
         </TabsContent>
       </Tabs>
     </div>

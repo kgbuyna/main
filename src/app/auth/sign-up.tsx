@@ -15,11 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { postRequest } from "@/utils/handlers";
-import { useUser } from "@/hooks/userProvider";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useDispatch } from "react-redux";
-import { push } from "@/store/slices/routerSlice";
+import { push, setToken, setUser } from "@/store/slices/userSlice";
 
 const formSchema = z
   .object({
@@ -36,7 +35,6 @@ const formSchema = z
 const SignUp = () => {
   const dispatch = useDispatch();
 
-  const { setUser, setToken, activeTabKey, tokenKey } = useUser();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,12 +55,15 @@ const SignUp = () => {
         }
       );
       if (res.data && res.status === "success") {
-        setUser({
-          username: values.username,
-        });
-        setToken(res.data.token);
-        localStorage.setItem(tokenKey, res.data.token);
-        dispatch(push({ activeTabKey, dest: "messenger" }));
+        dispatch(
+          setUser({
+            id: res.data.id,
+            username: values.username,
+          })
+        );
+
+        dispatch(setToken(res.data.token));
+        dispatch(push("inbox"));
 
         toast({
           variant: "default",
@@ -177,9 +178,7 @@ const SignUp = () => {
                   <Button
                     variant={"link"}
                     className="underline"
-                    onClick={() =>
-                      dispatch(push({ activeTabKey, dest: "login" }))
-                    }
+                    onClick={() => dispatch(push("login"))}
                   >
                     Login
                   </Button>

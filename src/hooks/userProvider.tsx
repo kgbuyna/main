@@ -1,12 +1,6 @@
-import { push } from "@/store/slices/routerSlice";
+import { push } from "@/store/slices/userSlice";
 import { UserType } from "@/types/base";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { useDispatch } from "react-redux";
 
 interface UserContextProps {
@@ -30,24 +24,11 @@ export const UserProvider = ({
   children: ReactNode;
   activeTabKey: string;
 }) => {
-  const [token, setToken] = useState<string>("");
   const [user, setUser] = useState<UserType | null>(null);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const token = localStorage.getItem(tokenKey);
-    if (!token) return;
-
-    setToken(token);
-    const tab = localStorage.getItem(activeTabKey);
-
-    dispatch(push({ activeTabKey, dest: tab || "login" }));
-  }, []);
-
   return (
-    <UserContext.Provider
-      value={{ tokenKey, user, setUser, token, setToken, activeTabKey }}
-    >
+    <UserContext.Provider value={{ tokenKey, user, setUser, activeTabKey }}>
       {children}
     </UserContext.Provider>
   );

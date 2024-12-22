@@ -24,7 +24,8 @@ interface MailProps {
   navCollapsedSize: number;
 }
 
-const MailLayout = ({ accounts, mails, navCollapsedSize }: MailProps) => {
+const InboxTab = ({ accounts, mails, navCollapsedSize }: MailProps) => {
+
   return (
     <Tabs defaultValue="all" className="h-full">
       <div className="flex items-center px-2 py-4">
@@ -60,4 +61,4 @@ const MailLayout = ({ accounts, mails, navCollapsedSize }: MailProps) => {
   );
 };
 
-export default MailLayout;
+export default InboxTab;
