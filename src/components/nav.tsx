@@ -21,9 +21,9 @@ export function Nav({ links, isCollapsed }: NavProps) {
   return (
     <div
       data-collapsed={isCollapsed}
-      className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2"
+      className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2 w-[var(--nav-width)] border-r-2"
     >
-      <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+      <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2 py-4">
         {links.map((link, index) =>
           isCollapsed ? (
             <Tooltip key={index} delayDuration={0}>
@@ -62,11 +62,11 @@ export function Nav({ links, isCollapsed }: NavProps) {
               )}
             >
               <link.icon className="mr-2 h-4 w-4" />
-              {link.title}
+              <span className="text-sm">{link.title}</span>
               {link.label && (
                 <span
                   className={cn(
-                    "ml-auto",
+                    "ml-auto text-sm	",
                     link.variant === "default" &&
                       "text-background dark:text-white"
                   )}

@@ -1,21 +1,31 @@
-import { ComponentProps } from "react"
-import formatDistanceToNow from "date-fns/formatDistanceToNow"
+import { formatDistanceToNow } from "date-fns";
 
-import { cn } from "@/lib/utils"
-import { ScrollArea } from "./ui/scroll-area"
-import { useMail } from "@/app/mail/use-mail"
-import { Mail } from "@/app/mail/data"
-import { Badge } from "./ui/badge"
+import { cn } from "@/lib/utils";
+import { ScrollArea } from "./ui/scroll-area";
+import { useMail } from "@/app/messenger/use-mail";
+import { Mail } from "@/app/messenger/data";
+import { Badge } from "./ui/badge";
+import { UserType } from "@/types/base";
+
+interface MailType {
+  user1: UserType;
+  user2: UserType;
+  lastMessage: {
+    content: string;
+    createdAt: string;
+  };
+  createdAt: string;
+}
 
 interface MailListProps {
-  items: Mail[]
+  items: Mail[];
 }
 
 export function MailList({ items }: MailListProps) {
-  const [mail, setMail] = useMail()
+  const [mail, setMail] = useMail();
 
   return (
-    <ScrollArea className="h-screen">
+    <ScrollArea className="h-full">
       <div className="flex flex-col gap-2 p-4 pt-0">
         {items.map((item) => (
           <button
@@ -52,37 +62,21 @@ export function MailList({ items }: MailListProps) {
                   })}
                 </div>
               </div>
-              <div className="text-xs font-medium">{item.subject}</div>
             </div>
-            <div className="line-clamp-2 text-xs text-muted-foreground">
-              {item.text.substring(0, 300)}
-            </div>
-            {item.labels.length ? (
-              <div className="flex items-center gap-2">
-                {item.labels.map((label) => (
-                  <Badge key={label} variant={getBadgeVariantFromLabel(label)}>
-                    {label}
-                  </Badge>
-                ))}
+            <div className="flex flex-row">
+              <div className="line-clamp-2 text-xs text-muted-foreground">
+                <span className="font-semibold">Daniel:</span>{" "}
+                {item.text.substring(0, 300)}
               </div>
-            ) : null}
+              <div>
+                <Badge variant="default" className="text-xs">
+                  2
+                </Badge>
+              </div>
+            </div>
           </button>
         ))}
       </div>
     </ScrollArea>
-  )
-}
-
-function getBadgeVariantFromLabel(
-  label: string
-): ComponentProps<typeof Badge>["variant"] {
-  if (["work"].includes(label.toLowerCase())) {
-    return "default"
-  }
-
-  if (["personal"].includes(label.toLowerCase())) {
-    return "outline"
-  }
-
-  return "secondary"
+  );
 }

@@ -32,16 +32,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen w-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen`}
       >
         <ResizablePanelGroup
           direction="horizontal"
-          className="min-h-[200px] rounded-lg border md:min-w-[450px] w-full h-full"
+          className="min-h-[200px] rounded-lg border md:min-w-[450px]"
         >
           <ResizablePanel defaultSize={50}>
-            <div className="flex h-full items-center justify-center">
+            <div className="flex w-full">
               <Provider store={store1}>
-                <UserProvider index={1}>{children}</UserProvider>
+                <UserProvider tokenKey="sept" activeTabKey="trois">
+                  {children}
+                </UserProvider>
               </Provider>
             </div>
           </ResizablePanel>
@@ -49,7 +51,9 @@ export default function RootLayout({
           <ResizablePanel defaultSize={50}>
             <div className="flex h-full items-center justify-center">
               <Provider store={store2}>
-                <UserProvider index={2}>{children}</UserProvider>
+                <UserProvider tokenKey="deux" activeTabKey="quatre">
+                  {children}
+                </UserProvider>
               </Provider>
             </div>
           </ResizablePanel>

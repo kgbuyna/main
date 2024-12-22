@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Mail } from "@/app/mail/data";
+import { Mail } from "@/app/messenger/data";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";

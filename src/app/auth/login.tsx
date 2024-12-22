@@ -28,13 +28,15 @@ const formSchema = z.object({
 });
 const Login = () => {
   const { toast } = useToast();
-  const { setUser, setToken } = useUser();
+  const { setUser, setToken, activeTabKey, tokenKey } = useUser();
+
   const dispatch = useDispatch();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      password: "",
     },
   });
 
@@ -50,7 +52,11 @@ const Login = () => {
         setUser({
           username: values.username,
         });
+        dispatch(push({ activeTabKey, dest: "messenger" }));
+
+        localStorage.setItem(tokenKey, res.data.token);
         setToken(res.data.token);
+
         toast({
           variant: "default",
           description: res.message,
@@ -126,7 +132,9 @@ const Login = () => {
                 <Button
                   variant={"link"}
                   className="underline"
-                  onClick={() => dispatch(push("sign-up"))}
+                  onClick={() =>
+                    dispatch(push({ activeTabKey, dest: "sign-up" }))
+                  }
                 >
                   Sign up
                 </Button>

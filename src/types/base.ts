@@ -1,4 +1,5 @@
-export interface UserType {
-  username: string;
-  // token: string;
+export default interface Base {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

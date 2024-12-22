@@ -1,3 +1,4 @@
+import { push } from "@/store/slices/routerSlice";
 import { UserType } from "@/types/base";
 import {
   createContext,
@@ -6,37 +7,47 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useDispatch } from "react-redux";
 
 interface UserContextProps {
   user: UserType | null;
   setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
   token: string;
-  index: number;
+  tokenKey: string;
   setToken: React.Dispatch<React.SetStateAction<string>>;
+  activeTabKey: string;
   //   logout: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider = ({
-  index,
+  tokenKey,
   children,
+  activeTabKey,
 }: {
-  index: number;
+  tokenKey: string;
   children: ReactNode;
+  activeTabKey: string;
 }) => {
   const [token, setToken] = useState<string>("");
   const [user, setUser] = useState<UserType | null>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setToken(token);
-    }
+    const token = localStorage.getItem(tokenKey);
+    if (!token) return;
+
+    setToken(token);
+    const tab = localStorage.getItem(activeTabKey);
+
+    dispatch(push({ activeTabKey, dest: tab || "login" }));
   }, []);
 
   return (
-    <UserContext.Provider value={{ index, user, setUser, token, setToken }}>
+    <UserContext.Provider
+      value={{ tokenKey, user, setUser, token, setToken, activeTabKey }}
+    >
       {children}
     </UserContext.Provider>
   );

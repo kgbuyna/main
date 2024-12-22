@@ -36,12 +36,15 @@ const formSchema = z
 const SignUp = () => {
   const dispatch = useDispatch();
 
-  const { setUser, setToken } = useUser();
+  const { setUser, setToken, activeTabKey, tokenKey } = useUser();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      firstName: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -58,7 +61,15 @@ const SignUp = () => {
           username: values.username,
         });
         setToken(res.data.token);
-        localStorage.setItem("token", res.data.token);
+        localStorage.setItem(tokenKey, res.data.token);
+        dispatch(push({ activeTabKey, dest: "messenger" }));
+
+        toast({
+          variant: "default",
+          description: res.message,
+          duration: 1000,
+          color: "green",
+        });
       }
     } catch (err) {
       if (Array.isArray(err)) {
@@ -166,7 +177,9 @@ const SignUp = () => {
                   <Button
                     variant={"link"}
                     className="underline"
-                    onClick={() => dispatch(push("login"))}
+                    onClick={() =>
+                      dispatch(push({ activeTabKey, dest: "login" }))
+                    }
                   >
                     Login
                   </Button>

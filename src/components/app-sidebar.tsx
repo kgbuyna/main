@@ -12,6 +12,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarProvider,
 } from "@/components/ui/sidebar";
 
 // This is sample data.
@@ -22,12 +23,13 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Installation",
+          title: "Inbox",
           url: "#",
         },
         {
           title: "Project Structure",
           url: "#",
+          isActive: true,
         },
       ],
     },
@@ -36,7 +38,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="floating" {...props}>
+    <Sidebar variant="sidebar" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -59,16 +61,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenu className="gap-2">
             {data.navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url} className="font-medium">
-                    {item.title}
-                  </a>
-                </SidebarMenuButton>
+                {/* <SidebarMenuButton
+                    asChild
+                    onClick={() => console.log("object")}
+                  >
+                    <a href={item.url} className="font-medium">
+                      {item.title}
+                    </a>
+                  </SidebarMenuButton> */}
                 {item.items?.length ? (
                   <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
                     {item.items.map((item) => (
                       <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild isActive={item.isActive}>
+                        <SidebarMenuSubButton
+                          asChild
+                          onClick={() => console.log("object")}
+                          isActive={item.isActive}
+                        >
                           <a href={item.url}>{item.title}</a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
