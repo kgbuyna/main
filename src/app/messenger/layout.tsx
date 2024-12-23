@@ -13,6 +13,7 @@ import {
 } from "../../components/ui/tabs";
 import { MailList } from "../../components/message-list";
 import { type Mail } from "@/app/messenger/data";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface MailProps {
   accounts: {
@@ -25,7 +26,6 @@ interface MailProps {
 }
 
 const InboxTab = ({ accounts, mails, navCollapsedSize }: MailProps) => {
-
   return (
     <Tabs defaultValue="all" className="h-full">
       <div className="flex items-center px-2 py-4">
@@ -43,14 +43,9 @@ const InboxTab = ({ accounts, mails, navCollapsedSize }: MailProps) => {
         </TabsList>
       </div>
       <Separator />
-      <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <form>
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search" className="pl-8" />
-          </div>
-        </form>
-      </div>
+      <ScrollArea>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
       <TabsContent value="all" className="m-0">
         <MailList items={[]} />
       </TabsContent>

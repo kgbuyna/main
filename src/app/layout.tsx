@@ -11,6 +11,9 @@ import {
 import { Provider } from "react-redux";
 
 import createStore from "@/store/store";
+import { SocketProvider } from "@/hooks/socketProvider";
+
+// localStorage.debug = "socket.io-client:*";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -51,13 +54,17 @@ export default function RootLayout({
         >
           <ResizablePanel defaultSize={50}>
             <div className="flex w-full">
-              <Provider store={store1}>{children}</Provider>
+              <Provider store={store1}>
+                <SocketProvider>{children}</SocketProvider>
+              </Provider>
             </div>
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={50}>
             <div className="flex h-full items-center justify-center">
-              <Provider store={store2}>{children}</Provider>
+              <Provider store={store2}>
+                <SocketProvider>{children}</SocketProvider>
+              </Provider>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

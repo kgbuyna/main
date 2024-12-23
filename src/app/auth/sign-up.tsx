@@ -18,7 +18,7 @@ import { postRequest } from "@/utils/handlers";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useDispatch } from "react-redux";
-import { push, setToken, setUser } from "@/store/slices/userSlice";
+import { login, push } from "@/store/slices/userSlice";
 
 const formSchema = z
   .object({
@@ -56,15 +56,14 @@ const SignUp = () => {
       );
       if (res.data && res.status === "success") {
         dispatch(
-          setUser({
-            id: res.data.id,
-            username: values.username,
+          login({
+            token: res.data.token,
+            user: {
+              id: res.data.id,
+              username: values.username,
+            },
           })
         );
-
-        dispatch(setToken(res.data.token));
-        dispatch(push("inbox"));
-
         toast({
           variant: "default",
           description: res.message,

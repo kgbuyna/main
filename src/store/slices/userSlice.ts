@@ -1,23 +1,29 @@
+import initSocket from "@/services/socket";
+import socket, {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from "@/services/socket";
 import { Route } from "@/types/base";
 import { UserType } from "@/types/userType";
 import { createSlice } from "@reduxjs/toolkit";
+import { Socket } from "socket.io-client";
 
 interface UserStateType {
   // Local Storage Keys
   activeTabKey: string;
   tokenKey: string;
   userKey: string;
-
+  socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
   currentRoute: Route;
   token: null | string;
-  user: UserType | null;
+  user: Partial<UserType> | null;
 }
 
 const initialState: UserStateType = {
   activeTabKey: "",
   tokenKey: "",
   userKey: "",
-
+  socket: null,
   currentRoute: "login",
   token: null,
   user: null,
@@ -44,6 +50,19 @@ const userSlice = createSlice({
       localStorage.setItem(state.userKey, JSON.stringify(user));
       state.user = { ...state.user, ...user } as UserType;
     },
+    login: (
+      state,
+      action: { payload: { user: Partial<UserType>; token: string } }
+    ) => {
+      const { user, token } = action.payload;
+      state.user = {
+        id: user.id!,
+        username: user.username!,
+      };
+
+      state.token = token;
+      state.currentRoute = "inbox";
+    },
     logout: (state) => {
       state.user = null;
       localStorage.removeItem(state.activeTabKey);
@@ -58,8 +77,6 @@ const userSlice = createSlice({
         payload: { activeTabKey: string; tokenKey: string; userKey: string };
       }
     ) => {
-      console.log("intializing");
-      console.log(action.payload);
       const { activeTabKey, tokenKey, userKey } = action.payload;
       const token = localStorage.getItem(tokenKey);
 
@@ -88,5 +105,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { push, setToken, setUser, logout } = userSlice.actions;
+export const { push, setToken, setUser, logout, login } = userSlice.actions;
 export default userSlice;

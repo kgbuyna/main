@@ -11,10 +11,7 @@ import InboxTab from "./messenger/layout";
 
 const App = () => {
   const currentRoute = useSelector((state) => state.user.currentRoute);
-  const state = useSelector((state) => state.user);
-  console.log("state");
-  console.log(JSON.stringify(state));
-
+  
   return (
     <div className="flex flex-row h-screen w-full">
       {currentRoute !== "login" && currentRoute !== "sign-up" && (
