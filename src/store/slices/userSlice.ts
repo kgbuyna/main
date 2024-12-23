@@ -1,19 +1,12 @@
-import initSocket from "@/services/socket";
-import socket, {
-  ClientToServerEvents,
-  ServerToClientEvents,
-} from "@/services/socket";
 import { Route } from "@/types/base";
 import { UserType } from "@/types/userType";
 import { createSlice } from "@reduxjs/toolkit";
-import { Socket } from "socket.io-client";
 
 interface UserStateType {
   // Local Storage Keys
   activeTabKey: string;
   tokenKey: string;
   userKey: string;
-  socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
   currentRoute: Route;
   token: null | string;
   user: Partial<UserType> | null;
@@ -23,7 +16,6 @@ const initialState: UserStateType = {
   activeTabKey: "",
   tokenKey: "",
   userKey: "",
-  socket: null,
   currentRoute: "login",
   token: null,
   user: null,
