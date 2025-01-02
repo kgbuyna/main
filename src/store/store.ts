@@ -2,16 +2,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./slices/userSlice";
 
 interface InitialStoreValue {
-  activeTabKey: string;
-  tokenKey: string;
   userKey: string;
 }
 
-const createStore = ({
-  activeTabKey,
-  tokenKey,
-  userKey,
-}: InitialStoreValue) => {
+const createStore = ({ userKey }: InitialStoreValue) => {
   const store = configureStore({
     reducer: {
       user: userSlice.reducer,
@@ -20,8 +14,6 @@ const createStore = ({
 
   store.dispatch(
     userSlice.actions.initialize({
-      activeTabKey,
-      tokenKey,
       userKey,
     })
   );

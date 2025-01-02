@@ -1,5 +1,24 @@
 import { AxiosResponse } from "axios";
 import axiosClient from "./axiosClient";
+import { UserStateType } from "@/types/base";
+import { UserType } from "@/types/userType";
+
+export const updateUserData = (
+  userKey: string,
+  key: keyof Omit<UserStateType, "userKey">,
+  value: object | string | null
+) => {
+  const userData = JSON.parse(localStorage.getItem(userKey) || "{}");
+  localStorage.setItem(userKey, JSON.stringify({ ...userData, [key]: value }));
+};
+
+export const getUserData = (
+  userKey: string,
+  key: keyof Omit<UserStateType, "userKey">
+): string | null | UserType => {
+  const userData = JSON.parse(localStorage.getItem(userKey) || "{}");
+  return userData[key];
+};
 
 export type ApiResponse<T> =
   | {
@@ -26,15 +45,47 @@ export type ApiResponse<T> =
 const postRequest = async function <T>(
   url: string,
   data: object,
-  config = {},
+  config: { userKey: string } = { userKey: "" },
   baseUrl: string = ""
 ): Promise<ApiResponse<T>> {
   try {
+    const { userKey } = config;
     const response: AxiosResponse<ApiResponse<T>> = await axiosClient(
-      baseUrl
-    ).post(url, data, config);
+      baseUrl,
+      userKey
+    ).post(url, data);
     if (response.data.status === "error") {
-      throw new Error(response.data.message || response.data.messages);
+      if (response.data.message) throw new Error(response.data.message);
+      else if (response.data.messages) {
+        response.data.messages.forEach((msg) => {
+          throw new Error(msg);
+        });
+      }
+    }
+    return response.data;
+  } catch (error) {
+    console.log("Error making POST request:", error);
+    throw new Error(error);
+  }
+};
+const getRequest = async function <T>(
+  url: string,
+  config: { userKey: string },
+  baseUrl: string = ""
+): Promise<ApiResponse<T>> {
+  try {
+    const { userKey } = config;
+    const response: AxiosResponse<ApiResponse<T>> = await axiosClient(
+      baseUrl,
+      userKey
+    ).get(url);
+    if (response.data.status === "error") {
+      if (response.data.message) throw new Error(response.data.message);
+      else if (response.data.messages) {
+        response.data.messages.forEach((msg) => {
+          throw new Error(msg);
+        });
+      }
     }
     return response.data;
   } catch (error) {
@@ -43,4 +94,4 @@ const postRequest = async function <T>(
   }
 };
 
-export { postRequest };
+export { postRequest, getRequest };

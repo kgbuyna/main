@@ -1,20 +1,12 @@
-import { Route } from "@/types/base";
+import { Route, UserStateType } from "@/types/base";
 import { UserType } from "@/types/userType";
+import { getUserData, updateUserData } from "@/utils/handlers";
 import { createSlice } from "@reduxjs/toolkit";
 
-interface UserStateType {
-  // Local Storage Keys
-  activeTabKey: string;
-  tokenKey: string;
-  userKey: string;
-  currentRoute: Route;
-  token: null | string;
-  user: Partial<UserType> | null;
-}
 
 const initialState: UserStateType = {
-  activeTabKey: "",
-  tokenKey: "",
+  // activeTabKey: "",
+  // tokenKey: "",
   userKey: "",
   currentRoute: "login",
   token: null,
@@ -28,18 +20,20 @@ const userSlice = createSlice({
     push: (state, action: { payload: Route }) => {
       const dest = action.payload;
 
-      localStorage.setItem(state.activeTabKey, dest);
+      updateUserData(state.userKey, "currentRoute", dest);
+
       state.currentRoute = dest;
     },
     setToken: (state, action: { payload: string }) => {
       const token = action.payload;
-      localStorage.setItem(state.tokenKey, token);
+
+      updateUserData(state.userKey, "token", token);
 
       state.token = token;
     },
     setUser: (state, action: { payload: Partial<UserType> | null }) => {
       const user = action.payload;
-      localStorage.setItem(state.userKey, JSON.stringify(user));
+      updateUserData(state.userKey, "user", JSON.stringify(user));
       state.user = { ...state.user, ...user } as UserType;
     },
     login: (
@@ -51,14 +45,12 @@ const userSlice = createSlice({
         id: user.id!,
         username: user.username!,
       };
-
       state.token = token;
-      state.currentRoute = "inbox";
+      updateUserData(state.userKey, "user", JSON.stringify(user));
+      updateUserData(state.userKey, "token", token);
     },
     logout: (state) => {
       state.user = null;
-      localStorage.removeItem(state.activeTabKey);
-      localStorage.removeItem(state.tokenKey);
       localStorage.removeItem(state.userKey);
       state.token = null;
       state.currentRoute = "login";
@@ -66,16 +58,12 @@ const userSlice = createSlice({
     initialize: (
       state,
       action: {
-        payload: { activeTabKey: string; tokenKey: string; userKey: string };
+        payload: { userKey: UserStateType["userKey"] };
       }
     ) => {
-      const { activeTabKey, tokenKey, userKey } = action.payload;
-      const token = localStorage.getItem(tokenKey);
-
-      state.tokenKey = tokenKey;
-      state.activeTabKey = activeTabKey;
+      const { userKey } = action.payload;
       state.userKey = userKey;
-
+      const token = getUserData(userKey, "token");
       if (!token) {
         state.currentRoute = "login";
         state.token = null;
@@ -83,16 +71,15 @@ const userSlice = createSlice({
         return; // Exit early since there's no token
       }
 
-      const user = JSON.parse(
-        localStorage.getItem(userKey) || "{}"
-      ) as UserType;
+      const user = getUserData(userKey, "user");
+
       const currentRoute =
-        (localStorage.getItem(activeTabKey) as Route) || "login";
+        (getUserData(userKey, "currentRoute") as Route) || "login";
 
       // Update remaining state properties
       state.currentRoute = currentRoute;
-      state.token = token;
-      state.user = user;
+      state.token = token as string;
+      state.user = user as UserType;
     },
   },
 });
