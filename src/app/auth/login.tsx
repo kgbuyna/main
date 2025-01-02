@@ -55,6 +55,8 @@ const Login = () => {
           })
         );
 
+        dispatch(push("inbox"));
+
         toast({
           variant: "default",
           description: res.message,
